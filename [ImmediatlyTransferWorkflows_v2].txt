@@ -1,0 +1,148 @@
+/****** Object:  StoredProcedure [dbo].[ImmediatlyTransferWorkflows_v2]    Script Date: 9/7/2020 6:06:48 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:      <Author, , Malith>
+-- Create Date: <Create Date, 08,21 >
+-- Description: <Description, [ImmediatlyTransferWorkflows] v2 >
+-- =============================================
+ALTER PROCEDURE [dbo].[ImmediatlyTransferWorkflows_v2]
+(
+    @ReferenceId NVARCHAR(MAX),
+	@CoveringPerson NVARCHAR(MAX),
+	@workflowId BIGINT,
+	@DelegationRequestId BIGINT
+)
+AS
+IF @WorkflowId=0
+BEGIN
+	return;
+	--DECLARE @isDelegated as bit
+	--SET @isDelegated = 1
+	--DECLARE @filterType as nvarchar(20)
+	--SET @filterType = 'Pending'
+	--BEGIN
+	--		INSERT INTO InboxItem(UserReferenceId,
+	--		[Type],
+	--		[Data],
+	--		FilterType,
+	--		[Date],
+	--		WorkflowInstaceId,
+	--		TaskId,
+	--		CompletedBy,
+	--		IdentityValues,
+	--		WorkflowEntityInvolvementsJsonString,
+	--		WorkflowName,
+	--		WorkflowId,
+	--		WorkflowInitiatedDataJsonString,
+	--		IsDelegated,
+	--		DelegationRequestId,
+	--		WorkflowCategory,
+	--		IsApprovalTask,
+	--		ApprovalReferenceId,
+	--		IsOutboxItem,
+	--		WorkflowCategoryIcon,
+	--		TransferedTo)
+
+	--		SELECT @CoveringPerson,
+	--		[Type],
+	--		[Data],
+	--		@filterType,
+	--		[Date],
+	--		WorkflowInstaceId,
+	--		TaskId,
+	--		CompletedBy,
+	--		IdentityValues,
+	--		WorkflowEntityInvolvementsJsonString,
+	--		WorkflowName,
+	--		WorkflowId,
+	--		WorkflowInitiatedDataJsonString,
+	--		@isDelegated,
+	--		@DelegationRequestId,
+	--		WorkflowCategory,
+	--		IsApprovalTask,
+	--		ApprovalReferenceId,
+	--		IsOutboxItem,
+	--		WorkflowCategoryIcon,
+	--		@CoveringPerson
+	--		FROM InboxItem
+	--		WHERE FilterType='Pending' AND UserReferenceId = @ReferenceId
+	--END
+	--BEGIN
+	--	Update InboxItem set FilterType = 'Removed',
+	--									 TransferedTo = @coveringPerson 
+	--									 WHERE UserReferenceId=@ReferenceId AND 
+	--									 FilterType = 'Pending'
+	--END
+	--	BEGIN
+	--		SELECT * FROM InboxItem WHERE UserReferenceId=@ReferenceId AND 
+	--			FilterType = 'Removed'
+	--	END
+END
+ELSE
+	DECLARE @isDelegated2 as bit
+	SET @isDelegated2 = 1
+	DECLARE @filterType2 as nvarchar(20)
+	SET @filterType2 = 'Pending'
+	BEGIN
+			INSERT INTO InboxItem(UserReferenceId,
+			[Type],
+			[Data],
+			FilterType,
+			[Date],
+			WorkflowInstaceId,
+			TaskId,
+			CompletedBy,
+			IdentityValues,
+			WorkflowEntityInvolvementsJsonString,
+			WorkflowName,
+			WorkflowId,
+			WorkflowInitiatedDataJsonString,
+			IsDelegated,
+			DelegationRequestId,
+			WorkflowCategory,
+			IsApprovalTask,
+			ApprovalReferenceId,
+			IsOutboxItem,
+			WorkflowCategoryIcon,
+			TransferedTo)
+
+			SELECT @CoveringPerson,
+			[Type],
+			[Data],
+			@filterType2,
+			[Date],
+			WorkflowInstaceId,
+			TaskId,
+			CompletedBy,
+			IdentityValues,
+			WorkflowEntityInvolvementsJsonString,
+			WorkflowName,
+			WorkflowId,
+			WorkflowInitiatedDataJsonString,
+			@isDelegated2,
+			@DelegationRequestId,
+			WorkflowCategory,
+			IsApprovalTask,
+			ApprovalReferenceId,
+			IsOutboxItem,
+			WorkflowCategoryIcon,
+			@CoveringPerson
+			FROM InboxItem
+			WHERE FilterType='Pending' AND UserReferenceId = @ReferenceId AND WorkflowId=@workflowId
+	END
+	BEGIN
+		Update InboxItem set FilterType = 'Removed',
+										 TransferedTo = @coveringPerson 
+										 WHERE UserReferenceId=@ReferenceId AND 
+										 FilterType = 'Pending' AND
+										 WorkflowId= @workflowId
+	END
+	BEGIN
+		SELECT * FROM InboxItem WHERE UserReferenceId=@ReferenceId AND 
+			FilterType = 'Removed' AND
+			WorkflowId = @workflowId
+	END
+
