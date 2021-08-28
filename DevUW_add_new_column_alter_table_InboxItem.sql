@@ -1,0 +1,1 @@
+ALTER TABLE [dbo].[InboxItem] ADD TaskName nvarchar(MAX) NULL;
